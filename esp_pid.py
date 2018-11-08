@@ -14,10 +14,7 @@ def _clamp(value, limits):
         return lower
     return value
     
-
-# получение постоянно изменяющегося времени
 _current_time = time.ticks_ms
-
 
 class PID(object):
     """
@@ -55,7 +52,6 @@ class PID(object):
         self.proportional_on_measurement = proportional_on_measurement
 
         self._error_sum = 0
-        # Вычисление времени в секундах
         self._last_time = _current_time()/1000 
         self._last_output = None
         self._proportional = 0
@@ -67,60 +63,37 @@ class PID(object):
         значения, если с момента последнего вычисления прошло sample_time. Если новое значение не вычисляется, 
         возвращается предыдущий результат (или None, если значение еще не посчитано).
         """
-        #print('PID input:', input_)
         
-        if not self.auto_mode: #Проверка режима ПИД регулятора
+        if not self.auto_mode:
             return self._last_output
-        #print('auto_mode =', self.auto_mode)
 
-        now = _current_time()/1000 # Вычисление времени в секундах с последнего вычисления
-        #print('Now:', now)
+        now = _current_time()/1000
         dt = now - self._last_time
-        #print('Delta Time:', dt)
-        #Сревнение времени прошедшего с последнего вычисления с заданым значением
+        
         if self.sample_time is not None and dt < self.sample_time and self._last_output is not None:
-            #Если времени прошло меньше чем заданное значение, возращяем предыдущий результат
+            
             return self._last_output
 
-        #Вычисление ошибки
         error = self.setpoint - input_
         
-        #Вычисление интегральной составляющей и суммирование с результатом
         self._error_sum += self.Ki * error * dt
 
-        # вычисление пропорциональной составляющей
         d_input = input_ - (self._last_input if self._last_input is not None else input_)
         if not self.proportional_on_measurement:
-            # пропорциональная составляющая, простое вычисление по установленному коэффициенту
             self._proportional = self.Kp * error
         else:
-            # пропорциональная составляющая, вычисление и суммирование с результатом
             self._error_sum -= self.Kp * d_input
             self._proportional = 0
 
-        # сранение сумммы пропорциональной и интегральной составляющей с установленным нижним и верхним пределом
         self._error_sum = _clamp(self._error_sum, self.output_limits)
 
-        # compute final output
-        # вычисление итогового результата(суммирование с дифференциальной составыляющей)
         output = self._proportional + self._error_sum - self.Kd * d_input
-        #print('Error_sum:', output)
         
-        # сранение итогового результата с установленным нижним и верхним пределом
         output = _clamp(output, self.output_limits)
 
-        # keep track of state
-        # сохрание результатов вычислений
         self._last_output = output
-        # сохранение предыдущего входного значения
         self._last_input = input_
-        # сохрание времени предыдущего вычисления
         self._last_time = now
-        # Возращение вычисленного результата погрешности ПИД регулятора
-        #print('Last out:', self._last_output)
-        #print('Last input:', self._last_input)
-        #print('Last time', self._last_time)
-        #print('PID out:', output)
         return output
 
     @property
@@ -141,9 +114,7 @@ class PID(object):
     @auto_mode.setter
     def auto_mode(self, enabled):
         """Включение или выключение ПИД регулятора"""
-        # Если enable = True, включаем, = False выключаем работу ПИД регулятора
         if enabled and not self._auto_mode:
-            # переход из ручного режима в автоматический, сброс
             self._last_output = None
             self._last_input = None
             self._error_sum = 0
@@ -169,16 +140,12 @@ class PID(object):
 
         min_output, max_output = limits
         
-        # проверяем нижний предел должен быть меньше верхнего предела
         if None not in limits and max_output < min_output:
             raise ValueError('lower limit must be less than upper limit')
 
         self._min_output = min_output
         self._max_output = max_output
         
-        # сранение суммы пропорциональной и интегральной составляющей 
-        # с установленным нижним и верхним пределом
         self._error_sum = _clamp(self._error_sum, self.output_limits)
-        # сохранение предыдущего входного значения
         self._last_output = _clamp(self._last_output, self.output_limits)
         

@@ -1,7 +1,7 @@
 ## ПИД контроллер для ESP8266
 
 
-За основу данной библиотеки была взята [simple-pid](https://github.com/m-lundberg/simple-pid/blob/master/README.md#simple-pid).
+За основу данной библиотеки была взят [simple-pid](https://github.com/m-lundberg/simple-pid/blob/master/README.md#simple-pid).
 
 Указанная выше библиотека была адаптирована для работы с микроконтроллерами ESP8266
 В основе этой библиотеки лежит руководство [Brett Beauregards](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).

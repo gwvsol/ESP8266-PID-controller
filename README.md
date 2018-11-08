@@ -5,6 +5,7 @@
 
 Указанная выше библиотека была адаптирована для работы с микроконтроллерами ESP8266
 В основе этой библиотеки лежит руководство [Brett Beauregards](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).
+
 [Документация](https://simple-pid.readthedocs.io/en/latest/simple_pid.html#module-simple_pid.PID) для ПИД контроллера
 
 ***Пример использования:***

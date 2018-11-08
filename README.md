@@ -1,38 +1,24 @@
-## RTS DS3231 работа с NTP и времеными зонами
+## ПИД контроллер для ESP8266
 
-За основу данной библиотеки была взята [ds3231_port.py](https://github.com/peterhinch/micropython-samples/blob/master/DS3231/ds3231_port.py).
 
-Дополнительный функционал который имеет данная библиотека:
-1. Обновление времени с NTP сервера (для этого используется немного измененная библиотека [timezone](https://github.com/gwvsol/ESP8266-TimeZone))
-2. Поддержка временных зон и перехода с летнего времени на зимнее
-3. Использование асинхронной библиотеки uasyncio позволило реализовать автоматический переход с летнего на зимнее время
+За основу данной библиотеки была взята [simple-pid](https://github.com/m-lundberg/simple-pid/blob/master/README.md#simple-pid).
 
-Если нет необходимости обноления времени с NTP сервера, можно использовать локальное время микроконтроллера. Для этого необходимо:
-```python
-rtc = DS3231(i2c, 0x68, 3, True, 'local')
-```
-Для поддержки обновления времени с NTP:
-```python
-rtc = DS3231(i2c, 0x68, 3, True, 'ntp')
-```
-Вызов метода обновляет время
-```python
-rtc.save_time()
-```
-При вызове метода с параметром True сбрасывает время до (2000, 0, 0, 0, 0, 0, 0, 0) это удобно использовать при отладке кода
-```python
-rtc.save_time(True)
-```
+Указанная выше библиотека была адаптирована для работы с микроконтроллерами ESP8266
+В основе этой библиотеки лежит руководство [Brett Beauregards](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).
+[Документация](https://simple-pid.readthedocs.io/en/latest/simple_pid.html#module-simple_pid.PID) для ПИД контроллера
 
 ***Пример использования:***
 ```python
-from machine import I2C, Pin
-import time
-from i2c_ds3231 import DS3231
-i2c = I2C(scl=Pin(5), sda=Pin(4), freq=400000)
-rtc = DS3231(i2c, 0x68, 3, True, 'ntp')
-rtc.save_time(True) #(2000, 1, 1, 0, 0, 0, 0, 0)
-rtc.save_time()     #(2018, 11, 8, 19, 29, 45, 3, 0)
-rtc.rtctime()       #Считываение времени с ds3231
-time.localtime()
+from esp_pid import PID
+pid = PID(1, 0.1, 0.05, setpoint=1)
+
+# у нас есть система которую хотим контролировать
+v = controlled_system.update(0)
+
+while True:
+    # расчет погрешности ПИД контроллером
+    control = pid(v)
+    
+    # применение к контролируемой системе расчитанной ПИД контроллером новой погрешности
+    v = controlled_system.update(control)
 ```

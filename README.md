@@ -1,10 +1,11 @@
-## ПИД контроллер для ESP8266
+## ПИД регулятор для ESP8266
 
+[![micropython](https://user-images.githubusercontent.com/13176091/53680744-4dfcc080-3ce8-11e9-94e1-c7985181d6a5.png)](https://micropython.org/)
 
 За основу данной библиотеки была взят [simple-pid](https://github.com/m-lundberg/simple-pid/blob/master/README.md#simple-pid).
 
-Указанная выше библиотека была адаптирована для работы с микроконтроллерами ESP8266
-В основе этой библиотеки лежит руководство [Brett Beauregards](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).
+Библиотека [simple-pid](https://github.com/m-lundberg/simple-pid/blob/master/README.md#simple-pid) была адаптирована для работы с микроконтроллерами ESP8266
+В основе библиотеки лежит руководство [Brett Beauregards](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).
 
 [Документация](https://simple-pid.readthedocs.io/en/latest/simple_pid.html#module-simple_pid.PID) для ПИД контроллера
 
